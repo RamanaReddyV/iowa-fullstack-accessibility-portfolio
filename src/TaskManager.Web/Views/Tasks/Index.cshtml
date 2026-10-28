@@ -1,0 +1,330 @@
+@model TaskManager.Web.Models.TaskListViewModel
+@{
+    ViewData["Title"] = "My Tasks";
+}
+
+<!-- Page heading with breadcrumb -->
+<nav aria-label="Breadcrumb" class="mb-2">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">My Tasks</li>
+    </ol>
+</nav>
+
+<!-- Page title + action button -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+    <h1 class="h2 mb-0">
+        <span class="material-icons align-middle text-primary me-2" aria-hidden="true">task_alt</span>
+        My Tasks
+    </h1>
+    <a asp-action="Create"
+       class="btn btn-primary btn-lg"
+       aria-label="Create a new task">
+        <span class="material-icons align-middle me-1" aria-hidden="true">add</span>
+        New Task
+    </a>
+</div>
+
+<!-- KPI Summary Cards -->
+<section aria-labelledby="summary-heading" class="mb-4">
+    <h2 id="summary-heading" class="visually-hidden">Task Summary</h2>
+    <div class="row g-3">
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100 text-center kpi-card kpi-total"
+                 role="region"
+                 aria-label="Total tasks: @Model.TotalCount">
+                <div class="card-body">
+                    <div class="kpi-icon bg-primary-subtle rounded-circle mx-auto mb-2">
+                        <span class="material-icons text-primary" aria-hidden="true">inventory_2</span>
+                    </div>
+                    <div class="h3 mb-0 fw-bold">@Model.TotalCount</div>
+                    <div class="small text-muted">Total</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100 text-center kpi-card"
+                 role="region"
+                 aria-label="To-do tasks: @Model.TodoCount">
+                <div class="card-body">
+                    <div class="kpi-icon bg-warning-subtle rounded-circle mx-auto mb-2">
+                        <span class="material-icons text-warning" aria-hidden="true">radio_button_unchecked</span>
+                    </div>
+                    <div class="h3 mb-0 fw-bold text-warning">@Model.TodoCount</div>
+                    <div class="small text-muted">To Do</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100 text-center kpi-card"
+                 role="region"
+                 aria-label="In progress tasks: @Model.InProgressCount">
+                <div class="card-body">
+                    <div class="kpi-icon bg-info-subtle rounded-circle mx-auto mb-2">
+                        <span class="material-icons text-info" aria-hidden="true">pending</span>
+                    </div>
+                    <div class="h3 mb-0 fw-bold text-info">@Model.InProgressCount</div>
+                    <div class="small text-muted">In Progress</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100 text-center kpi-card"
+                 role="region"
+                 aria-label="Completed tasks: @Model.DoneCount">
+                <div class="card-body">
+                    <div class="kpi-icon bg-success-subtle rounded-circle mx-auto mb-2">
+                        <span class="material-icons text-success" aria-hidden="true">check_circle</span>
+                    </div>
+                    <div class="h3 mb-0 fw-bold text-success">@Model.DoneCount</div>
+                    <div class="small text-muted">Done</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search & Filter -->
+<section aria-labelledby="filter-heading" class="mb-4">
+    <h2 id="filter-heading" class="visually-hidden">Search and Filter Tasks</h2>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <form method="get" asp-action="Index" role="search" aria-label="Search and filter tasks">
+                <div class="row g-2 align-items-end">
+                    <div class="col-12 col-md-5">
+                        <label for="searchInput" class="form-label fw-semibold">
+                            <span class="material-icons align-middle me-1 small" aria-hidden="true">search</span>
+                            Search Tasks
+                        </label>
+                        <input type="search"
+                               id="searchInput"
+                               name="search"
+                               value="@Model.SearchQuery"
+                               class="form-control"
+                               placeholder="Search by title or description..."
+                               aria-describedby="searchHint"
+                               autocomplete="off" />
+                        <div id="searchHint" class="form-text">Search by task title or description</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label for="priorityFilter" class="form-label fw-semibold">Priority</label>
+                        <select id="priorityFilter"
+                                name="priority"
+                                class="form-select"
+                                aria-label="Filter by priority">
+                            <option value="">All Priorities</option>
+                            @foreach (var p in Enum.GetValues<TaskManager.Core.Entities.TaskPriority>())
+                            {
+                                if (Model.FilterPriority == p)
+                                {
+                                    <option value="@p" selected="selected">@p</option>
+                                }
+                                else
+                                {
+                                    <option value="@p">@p</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label for="statusFilter" class="form-label fw-semibold">Status</label>
+                        <select id="statusFilter"
+                                name="status"
+                                class="form-select"
+                                aria-label="Filter by status">
+                            <option value="">All Statuses</option>
+                            @foreach (var s in Enum.GetValues<TaskManager.Core.Entities.TaskStatus>())
+                            {
+                                if (Model.FilterStatus == s)
+                                {
+                                    <option value="@s" selected="selected">@s</option>
+                                }
+                                else
+                                {
+                                    <option value="@s">@s</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-1 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100" aria-label="Apply search filters">
+                            <span class="material-icons" aria-hidden="true">filter_list</span>
+                            <span class="visually-hidden">Apply</span>
+                        </button>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.SearchQuery) || Model.FilterPriority.HasValue || Model.FilterStatus.HasValue)
+                {
+                    <div class="mt-2">
+                        <a asp-action="Index" class="btn btn-sm btn-outline-secondary" aria-label="Clear all filters">
+                            <span class="material-icons align-middle me-1 small" aria-hidden="true">clear</span>
+                            Clear Filters
+                        </a>
+                    </div>
+                }
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Tasks Table / List -->
+<section aria-labelledby="tasks-heading">
+    <h2 id="tasks-heading" class="visually-hidden">Tasks List</h2>
+
+    @if (!Model.Tasks.Any())
+    {
+        <div class="card border-dashed text-center py-5" role="region" aria-label="No tasks found">
+            <div class="card-body">
+                <span class="material-icons text-muted display-4" aria-hidden="true">inbox</span>
+                <h3 class="h5 mt-3 text-muted">No tasks found</h3>
+                <p class="text-muted">
+                    @if (!string.IsNullOrEmpty(Model.SearchQuery) || Model.FilterPriority.HasValue || Model.FilterStatus.HasValue)
+                    {
+                        <span>No tasks match your filters. <a asp-action="Index">Clear filters</a></span>
+                    }
+                    else
+                    {
+                        <span>Get started by <a asp-action="Create">creating your first task</a>.</span>
+                    }
+                </p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Desktop Table -->
+        <div class="card border-0 shadow-sm d-none d-md-block">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" aria-label="Task list">
+                        <caption class="visually-hidden">
+                            List of @Model.Tasks.Count() tasks. Columns: Title, Priority, Status, Due Date, Actions.
+                        </caption>
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="ps-3">Title</th>
+                                <th scope="col">Priority</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Due Date</th>
+                                <th scope="col">Created By</th>
+                                <th scope="col" class="text-end pe-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var task in Model.Tasks)
+                            {
+                                <tr class="task-row @(task.Status == TaskManager.Core.Entities.TaskStatus.Done ? "task-done" : "")">
+                                    <td class="ps-3">
+                                        <div class="fw-semibold">@task.Title</div>
+                                        @if (!string.IsNullOrEmpty(task.Description))
+                                        {
+                                            <div class="small text-muted text-truncate" style="max-width:300px">@task.Description</div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge priority-badge priority-@task.Priority.ToString().ToLower()"
+                                              aria-label="Priority: @task.Priority">
+                                            @task.Priority
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge status-badge status-@task.Status.ToString().ToLower()"
+                                              aria-label="Status: @task.Status">
+                                            @(task.Status == TaskManager.Core.Entities.TaskStatus.InProgress ? "In Progress" : task.Status.ToString())
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (task.DueDate.HasValue)
+                                        {
+                                            var isOverdue = task.DueDate < DateTime.Now && task.Status != TaskManager.Core.Entities.TaskStatus.Done;
+                                            <time datetime="@task.DueDate.Value.ToString("yyyy-MM-dd")"
+                                                  class="@(isOverdue ? "text-danger fw-semibold" : "")"
+                                                  aria-label="@(isOverdue ? "Overdue: " : "Due: ")@task.DueDate.Value.ToString("MMM d, yyyy")">
+                                                @if (isOverdue)
+                                                {
+                                                    <span class="material-icons align-middle me-1 small" aria-hidden="true">warning</span>
+                                                }
+                                                @task.DueDate.Value.ToString("MMM d, yyyy")
+                                            </time>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small" aria-label="No due date set">—</span>
+                                        }
+                                    </td>
+                                    <td><span class="small text-muted">@task.CreatedBy</span></td>
+                                    <td class="text-end pe-3">
+                                        <div class="btn-group" role="group" aria-label="Actions for task: @task.Title">
+                                            <a asp-action="Details" asp-route-id="@task.Id"
+                                               class="btn btn-sm btn-outline-secondary"
+                                               aria-label="View details of @task.Title">
+                                                <span class="material-icons small" aria-hidden="true">visibility</span>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@task.Id"
+                                               class="btn btn-sm btn-outline-primary"
+                                               aria-label="Edit @task.Title">
+                                                <span class="material-icons small" aria-hidden="true">edit</span>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@task.Id"
+                                               class="btn btn-sm btn-outline-danger"
+                                               aria-label="Delete @task.Title">
+                                                <span class="material-icons small" aria-hidden="true">delete</span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="d-md-none" role="list" aria-label="Task list">
+            @foreach (var task in Model.Tasks)
+            {
+                <article class="card mb-3 border-0 shadow-sm task-card"
+                         role="listitem"
+                         aria-label="Task: @task.Title, Status: @task.Status, Priority: @task.Priority">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h3 class="h6 mb-0 fw-semibold">@task.Title</h3>
+                            <div class="d-flex gap-1">
+                                <span class="badge priority-badge priority-@task.Priority.ToString().ToLower()">@task.Priority</span>
+                                <span class="badge status-badge status-@task.Status.ToString().ToLower()">
+                                    @(task.Status == TaskManager.Core.Entities.TaskStatus.InProgress ? "In Progress" : task.Status.ToString())
+                                </span>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(task.Description))
+                        {
+                            <p class="small text-muted mb-2">@task.Description</p>
+                        }
+                        @if (task.DueDate.HasValue)
+                        {
+                            <div class="small mb-2">
+                                <span class="material-icons align-middle me-1 small text-muted" aria-hidden="true">event</span>
+                                <time datetime="@task.DueDate.Value.ToString("yyyy-MM-dd")">@task.DueDate.Value.ToString("MMM d, yyyy")</time>
+                            </div>
+                        }
+                        <div class="d-flex gap-2 mt-2">
+                            <a asp-action="Details" asp-route-id="@task.Id" class="btn btn-sm btn-outline-secondary flex-fill"
+                               aria-label="View @task.Title">
+                                <span class="material-icons small align-middle" aria-hidden="true">visibility</span> View
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-outline-primary flex-fill"
+                               aria-label="Edit @task.Title">
+                                <span class="material-icons small align-middle" aria-hidden="true">edit</span> Edit
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@task.Id" class="btn btn-sm btn-outline-danger flex-fill"
+                               aria-label="Delete @task.Title">
+                                <span class="material-icons small align-middle" aria-hidden="true">delete</span>
+                                <span>Delete</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>

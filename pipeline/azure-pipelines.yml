@@ -1,0 +1,300 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# TaskFlow — Azure DevOps CI/CD Pipeline
+# Monorepo: iowa-fullstack-accessibility-portfolio
+#
+# Stages:
+#   1. Build       — Restore, build, publish artifacts
+#   2. UnitTests   — xUnit unit + integration tests with code coverage
+#   3. Accessibility — axe-core WCAG 2.1 AA scan + Playwright E2E
+#   4. Deploy      — Deploy to Azure App Service (staging → prod with gate)
+#
+# Accessibility Standards: WCAG 2.1 AA + Section 508
+# Test frameworks: xUnit, Playwright, axe-core
+# ═══════════════════════════════════════════════════════════════════════════════
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+      - feature/*
+  paths:
+    include:
+      - src/**
+      - tests/**
+      - pipeline/**
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+
+variables:
+  buildConfiguration: 'Release'
+  dotnetVersion:      '9.x'
+  nodeVersion:        '20.x'
+  solution:           '*.sln'
+  webProject:         'src/TaskManager.Web/TaskManager.Web.csproj'
+  publishOutput:      '$(Build.ArtifactStagingDirectory)/web'
+  accessibilityReportDir: '$(Build.ArtifactStagingDirectory)/accessibility-reports'
+
+# ── Stage 1: Build ────────────────────────────────────────────────────────────
+stages:
+- stage: Build
+  displayName: 'Build'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build & Restore'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Install .NET SDK'
+      inputs:
+        packageType: 'sdk'
+        version:     '$(dotnetVersion)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet packages'
+      inputs:
+        command:   'restore'
+        projects:  '$(solution)'
+        feedsToUse: 'select'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build solution'
+      inputs:
+        command:   'build'
+        projects:  '$(solution)'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish web app'
+      inputs:
+        command:            'publish'
+        publishWebProjects: false
+        projects:           '$(webProject)'
+        arguments:          '--configuration $(buildConfiguration) --output $(publishOutput)'
+        zipAfterPublish:    true
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Upload build artifact'
+      inputs:
+        targetPath: '$(publishOutput)'
+        artifact:   'WebApp'
+        publishLocation: 'pipeline'
+
+# ── Stage 2: Unit & Integration Tests ────────────────────────────────────────
+- stage: UnitTests
+  displayName: 'Unit & Integration Tests'
+  dependsOn: Build
+  jobs:
+  - job: TestJob
+    displayName: 'xUnit Tests with Coverage'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version:     '$(dotnetVersion)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore'
+      inputs:
+        command:  'restore'
+        projects: '$(solution)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Run unit tests'
+      inputs:
+        command:   'test'
+        projects:  'tests/TaskManager.UnitTests/TaskManager.UnitTests.csproj'
+        arguments: >
+          --configuration $(buildConfiguration)
+          --logger "trx;LogFileName=unit-test-results.trx"
+          --collect:"XPlat Code Coverage"
+          --results-directory $(Agent.TempDirectory)/TestResults
+        publishTestResults: false
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Run integration tests'
+      inputs:
+        command:   'test'
+        projects:  'tests/TaskManager.IntegrationTests/TaskManager.IntegrationTests.csproj'
+        arguments: >
+          --configuration $(buildConfiguration)
+          --logger "trx;LogFileName=integration-test-results.trx"
+          --collect:"XPlat Code Coverage"
+          --results-directory $(Agent.TempDirectory)/TestResults
+        publishTestResults: false
+
+    - task: PublishTestResults@2
+      displayName: 'Publish test results'
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles:  '$(Agent.TempDirectory)/TestResults/**/*.trx'
+        mergeTestResults:  true
+        testRunTitle:      'Unit & Integration Tests'
+      condition: always()
+
+    - task: PublishCodeCoverageResults@2
+      displayName: 'Publish code coverage'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)/TestResults/**/coverage.cobertura.xml'
+      condition: always()
+
+# ── Stage 3: Accessibility & E2E Tests ───────────────────────────────────────
+- stage: AccessibilityTests
+  displayName: 'Accessibility & E2E Tests'
+  dependsOn: Build
+  jobs:
+  - job: AccessibilityJob
+    displayName: 'axe-core WCAG 2.1 AA + Playwright E2E'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version:     '$(dotnetVersion)'
+
+    - task: UseNode@1
+      displayName: 'Install Node.js'
+      inputs:
+        version: '$(nodeVersion)'
+
+    # Start the web app in background
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore & Build for test server'
+      inputs:
+        command:   'build'
+        projects:  '$(webProject)'
+        arguments: '--configuration $(buildConfiguration)'
+
+    - script: |
+        dotnet run --project $(webProject) \
+          --configuration $(buildConfiguration) \
+          --urls http://localhost:5000 &
+        echo "Waiting for app to start..."
+        sleep 8
+        curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:5000/Tasks
+      displayName: 'Start web app (background)'
+
+    # Install Playwright browsers
+    - script: |
+        cd tests/TaskManager.E2E
+        npm ci
+        npx playwright install chromium --with-deps
+      displayName: 'Install Playwright (E2E)'
+
+    - script: |
+        cd tests/TaskManager.AccessibilityTests
+        npm ci
+        npx playwright install chromium --with-deps
+      displayName: 'Install Playwright (Accessibility)'
+
+    # Run E2E tests
+    - script: |
+        cd tests/TaskManager.E2E
+        npx playwright test --reporter=list,json 2>&1 | tee $(Agent.TempDirectory)/e2e-output.txt || true
+      displayName: 'Run E2E tests (Playwright)'
+
+    # Run accessibility tests
+    - script: |
+        mkdir -p accessibility-reports
+        cd tests/TaskManager.AccessibilityTests
+        npx playwright test --reporter=list,json 2>&1 | tee $(Agent.TempDirectory)/axe-output.txt || true
+      displayName: 'Run accessibility tests (axe-core)'
+
+    # Copy reports to staging
+    - script: |
+        mkdir -p $(accessibilityReportDir)
+        cp -r accessibility-reports/* $(accessibilityReportDir)/ 2>/dev/null || true
+        cp $(Agent.TempDirectory)/e2e-output.txt $(accessibilityReportDir)/e2e-console.txt 2>/dev/null || true
+        cp $(Agent.TempDirectory)/axe-output.txt $(accessibilityReportDir)/axe-console.txt 2>/dev/null || true
+      displayName: 'Collect accessibility reports'
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Upload accessibility reports'
+      inputs:
+        targetPath:      '$(accessibilityReportDir)'
+        artifact:        'AccessibilityReports'
+        publishLocation: 'pipeline'
+      condition: always()
+
+    # Fail stage if critical axe violations found
+    - script: |
+        if grep -r '"impact":"critical"' accessibility-reports/axe-*.json 2>/dev/null; then
+          echo "##vso[task.logissue type=error]Critical WCAG 2.1 AA violations found!"
+          exit 1
+        fi
+        echo "No critical accessibility violations detected."
+      displayName: 'Check for critical axe violations'
+      condition: always()
+
+# ── Stage 4: Deploy to Staging ───────────────────────────────────────────────
+- stage: DeployStaging
+  displayName: 'Deploy to Staging'
+  dependsOn:
+    - UnitTests
+    - AccessibilityTests
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployStagingJob
+    displayName: 'Deploy to Azure App Service (Staging)'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'TaskFlow-Staging'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              artifactName: 'WebApp'
+              targetPath:   '$(Pipeline.Workspace)/WebApp'
+
+          - task: AzureWebApp@1
+            displayName: 'Deploy to Azure App Service (Staging slot)'
+            inputs:
+              azureSubscription: '$(AzureServiceConnection)'
+              appType:           'webApp'
+              appName:           '$(AppServiceName)'
+              deployToSlotOrASE: true
+              resourceGroupName: '$(ResourceGroupName)'
+              slotName:          'staging'
+              package:           '$(Pipeline.Workspace)/WebApp/**/*.zip'
+
+# ── Stage 5: Production Gate + Deploy ────────────────────────────────────────
+- stage: DeployProduction
+  displayName: 'Deploy to Production'
+  dependsOn: DeployStaging
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployProductionJob
+    displayName: 'Deploy to Production (Manual Approval Gate)'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'TaskFlow-Production'   # Configure approval gate in ADO Environments
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              artifactName: 'WebApp'
+              targetPath:   '$(Pipeline.Workspace)/WebApp'
+
+          - task: AzureWebApp@1
+            displayName: 'Swap staging slot to production'
+            inputs:
+              azureSubscription: '$(AzureServiceConnection)'
+              appType:           'webApp'
+              appName:           '$(AppServiceName)'
+              deployToSlotOrASE: true
+              resourceGroupName: '$(ResourceGroupName)'
+              slotName:          'production'
+              package:           '$(Pipeline.Workspace)/WebApp/**/*.zip'

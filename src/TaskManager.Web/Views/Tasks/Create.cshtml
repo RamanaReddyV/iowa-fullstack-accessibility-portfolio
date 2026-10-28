@@ -1,0 +1,137 @@
+@model TaskManager.Web.Models.TaskItemViewModel
+@{
+    ViewData["Title"] = "New Task";
+}
+
+<nav aria-label="Breadcrumb" class="mb-2">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Tasks</a></li>
+        <li class="breadcrumb-item active" aria-current="page">New Task</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white py-3">
+                <h1 class="h4 mb-0">
+                    <span class="material-icons align-middle me-2" aria-hidden="true">add_task</span>
+                    Create New Task
+                </h1>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create"
+                      method="post"
+                      novalidate
+                      aria-label="Create new task form"
+                      id="createTaskForm">
+                    @Html.AntiForgeryToken()
+
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-semibold">
+                            Task Title <span class="text-danger" aria-hidden="true">*</span>
+                        </label>
+                        <input asp-for="Title"
+                               class="form-control form-control-lg"
+                               placeholder="Enter a clear, descriptive task title"
+                               aria-required="true"
+                               aria-describedby="titleError titleHint"
+                               autofocus />
+                        <div id="titleHint" class="form-text">Required. Between 3 and 200 characters.</div>
+                        <span asp-validation-for="Title"
+                              id="titleError"
+                              class="invalid-feedback d-block"
+                              aria-live="polite"></span>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-semibold">Description</label>
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Optional: add more details about this task"
+                                  aria-describedby="descError descHint"></textarea>
+                        <div id="descHint" class="form-text">Optional. Up to 2000 characters.</div>
+                        <span asp-validation-for="Description"
+                              id="descError"
+                              class="invalid-feedback d-block"
+                              aria-live="polite"></span>
+                    </div>
+
+                    <!-- Priority + Status row -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Priority" class="form-label fw-semibold">Priority</label>
+                            <select asp-for="Priority"
+                                    class="form-select"
+                                    asp-items="Html.GetEnumSelectList<TaskManager.Core.Entities.TaskPriority>()"
+                                    aria-describedby="priorityHint">
+                            </select>
+                            <div id="priorityHint" class="form-text">Select task importance level.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label fw-semibold">Status</label>
+                            <select asp-for="Status"
+                                    class="form-select"
+                                    asp-items="Html.GetEnumSelectList<TaskManager.Core.Entities.TaskStatus>()">
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Due Date + Created By row -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="DueDate" class="form-label fw-semibold">Due Date</label>
+                            <input asp-for="DueDate"
+                                   type="date"
+                                   class="form-control"
+                                   aria-describedby="dueDateHint" />
+                            <div id="dueDateHint" class="form-text">Optional due date for this task.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CreatedBy" class="form-label fw-semibold">Assigned To</label>
+                            <input asp-for="CreatedBy"
+                                   class="form-control"
+                                   placeholder="Your name or team"
+                                   aria-describedby="createdByHint" />
+                            <div id="createdByHint" class="form-text">Who is responsible for this task.</div>
+                        </div>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit"
+                                class="btn btn-primary btn-lg">
+                            <span class="material-icons align-middle me-1" aria-hidden="true">save</span>
+                            Create Task
+                        </button>
+                        <a asp-action="Index"
+                           class="btn btn-outline-secondary btn-lg">
+                            <span class="material-icons align-middle me-1" aria-hidden="true">cancel</span>
+                            Cancel and Return to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Enhance inline validation with ARIA
+        document.getElementById('createTaskForm').addEventListener('submit', function (e) {
+            const inputs = this.querySelectorAll('input[aria-required="true"], textarea[aria-required="true"]');
+            inputs.forEach(function (input) {
+                if (!input.value.trim()) {
+                    input.setAttribute('aria-invalid', 'true');
+                } else {
+                    input.removeAttribute('aria-invalid');
+                }
+            });
+        });
+    </script>
+}

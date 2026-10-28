@@ -1,0 +1,74 @@
+@model TaskManager.Web.Models.TaskItemViewModel
+@{
+    ViewData["Title"] = $"Delete: {Model.Title}";
+}
+
+<nav aria-label="Breadcrumb" class="mb-2">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Tasks</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id">@Model.Title</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Delete</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-6">
+        <div class="card border-danger border-0 shadow-sm">
+            <div class="card-header bg-danger text-white py-3">
+                <h1 class="h4 mb-0">
+                    <span class="material-icons align-middle me-2" aria-hidden="true">warning</span>
+                    Confirm Delete
+                </h1>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-warning d-flex align-items-start" role="alert">
+                    <span class="material-icons me-2 flex-shrink-0" aria-hidden="true">info</span>
+                    <div>
+                        <strong>Are you sure?</strong> This action cannot be undone.
+                        The task will be permanently deleted.
+                    </div>
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Title</dt>
+                    <dd class="col-sm-8 fw-semibold">@Model.Title</dd>
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <dt class="col-sm-4">Description</dt>
+                        <dd class="col-sm-8">@Model.Description</dd>
+                    }
+
+                    <dt class="col-sm-4">Priority</dt>
+                    <dd class="col-sm-8">@Model.Priority</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8">
+                        @(Model.Status == TaskManager.Core.Entities.TaskStatus.InProgress ? "In Progress" : Model.Status.ToString())
+                    </dd>
+
+                    <dt class="col-sm-4">Created By</dt>
+                    <dd class="col-sm-8">@Model.CreatedBy</dd>
+                </dl>
+            </div>
+            <div class="card-footer bg-transparent py-3">
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post"
+                      aria-label="Confirm delete task form">
+                    @Html.AntiForgeryToken()
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="submit"
+                                class="btn btn-danger btn-lg">
+                            <span class="material-icons align-middle me-1" aria-hidden="true">delete_forever</span>
+                            Yes, Delete Permanently
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id"
+                           class="btn btn-outline-secondary btn-lg">
+                            <span class="material-icons align-middle me-1" aria-hidden="true">cancel</span>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+{
+  "name": "taskmanager.accessibilitytests",
+  "version": "1.0.0",
+  "description": "axe-core accessibility tests with Playwright for WCAG 2.1 AA / Section 508",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:report": "npx playwright show-report"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "^1.49.0",
+    "axe-core": "^4.10.0"
+  }
+}

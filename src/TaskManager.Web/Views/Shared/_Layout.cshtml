@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="TaskFlow — Accessible Task Management Application" />
+    <title>@ViewData["Title"] - TaskFlow</title>
+
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Material Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+    <!-- Custom SASS-compiled styles -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <!-- Skip to main content (WCAG 2.4.1) -->
+</head>
+<body>
+    <!-- Skip Navigation Link (WCAG 2.4.1 Bypass Blocks) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header / Navbar -->
+    <header role="banner">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Primary navigation">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" href="~/Tasks">
+                    <span class="material-icons me-1" aria-hidden="true">task_alt</span>
+                    TaskFlow
+                </a>
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarContent"
+                        aria-controls="navbarContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0" role="list">
+                        <li class="nav-item" role="listitem">
+                            @{
+                                var isTasksActive = ViewContext.RouteData.Values["controller"]?.ToString() == "Tasks";
+                            }
+                            @if (isTasksActive)
+                            {
+                                <a class="nav-link active"
+                                   asp-controller="Tasks" asp-action="Index"
+                                   aria-current="page">
+                                    <span class="material-icons me-1 align-middle" aria-hidden="true">list</span>
+                                    My Tasks
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="nav-link"
+                                   asp-controller="Tasks" asp-action="Index">
+                                    <span class="material-icons me-1 align-middle" aria-hidden="true">list</span>
+                                    My Tasks
+                                </a>
+                            }
+                        </li>
+                        <li class="nav-item" role="listitem">
+                            <a class="nav-link" asp-controller="Tasks" asp-action="Create">
+                                <span class="material-icons me-1 align-middle" aria-hidden="true">add_circle</span>
+                                New Task
+                            </a>
+                        </li>
+                    </ul>
+                    <span class="navbar-text text-white-50" aria-label="Application status: WCAG 2.1 AA Compliant">
+                        <span class="material-icons align-middle me-1" aria-hidden="true">verified</span>
+                        WCAG 2.1 AA
+                    </span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" role="main" tabindex="-1" class="container-fluid px-3 px-md-4 py-4">
+
+        <!-- Live region for announcements (WCAG 4.1.3) -->
+        <div id="live-region"
+             aria-live="polite"
+             aria-atomic="true"
+             class="visually-hidden"
+             role="status"></div>
+
+        <!-- Toast notifications (accessible) -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show d-flex align-items-center mb-3"
+                 role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true">
+                <span class="material-icons me-2" aria-hidden="true">check_circle</span>
+                <div>@TempData["SuccessMessage"]</div>
+                <button type="button"
+                        class="btn-close ms-auto"
+                        data-bs-dismiss="alert"
+                        aria-label="Close notification"></button>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center mb-3"
+                 role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true">
+                <span class="material-icons me-2" aria-hidden="true">error</span>
+                <div>@TempData["ErrorMessage"]</div>
+                <button type="button"
+                        class="btn-close ms-auto"
+                        data-bs-dismiss="alert"
+                        aria-label="Close notification"></button>
+            </div>
+        }
+
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-light border-top" role="contentinfo">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <!-- #5A6474 on #F8F9FA = 4.6:1 contrast ratio (WCAG AA) -->
+                    <span class="footer-text small">
+                        &copy; @DateTime.Now.Year TaskFlow &mdash; Accessible Task Management
+                    </span>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <!-- bg-success dark = 1B5E20, bg-dark-info = 0D47A1 both ≥4.5:1 on white -->
+                    <span class="badge footer-badge-wcag me-1" role="img" aria-label="WCAG 2.1 AA Compliant">WCAG 2.1 AA</span>
+                    <span class="badge footer-badge-508" role="img" aria-label="Section 508 Compliant">Section 508</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

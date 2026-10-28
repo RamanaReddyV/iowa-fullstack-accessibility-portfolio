@@ -1,0 +1,103 @@
+@model TaskManager.Web.Models.TaskItemViewModel
+@{
+    ViewData["Title"] = Model.Title;
+    var statusClass = Model.Status switch {
+        TaskManager.Core.Entities.TaskStatus.Done       => "success",
+        TaskManager.Core.Entities.TaskStatus.InProgress => "info",
+        _                                                => "warning"
+    };
+    var priorityClass = Model.Priority switch {
+        TaskManager.Core.Entities.TaskPriority.High   => "danger",
+        TaskManager.Core.Entities.TaskPriority.Medium => "warning",
+        _                                              => "secondary"
+    };
+}
+
+<nav aria-label="Breadcrumb" class="mb-2">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">My Tasks</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <!-- Task Card -->
+        <article class="card border-0 shadow-sm" aria-label="Task details for @Model.Title">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                <h1 class="h4 mb-0">
+                    <span class="material-icons align-middle me-2 text-primary" aria-hidden="true">task</span>
+                    @Model.Title
+                </h1>
+                <div class="d-flex gap-2">
+                    <span class="badge bg-@priorityClass" aria-label="Priority: @Model.Priority">@Model.Priority</span>
+                    <span class="badge bg-@statusClass" aria-label="Status: @Model.Status">
+                        @(Model.Status == TaskManager.Core.Entities.TaskStatus.InProgress ? "In Progress" : Model.Status.ToString())
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <!-- Description -->
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <section aria-label="Task description" class="mb-4">
+                        <h2 class="h6 fw-semibold text-muted text-uppercase small mb-2">Description</h2>
+                        <p class="mb-0">@Model.Description</p>
+                    </section>
+                    <hr />
+                }
+
+                <!-- Metadata grid -->
+                <dl class="row" aria-label="Task metadata">
+                    <dt class="col-sm-4 text-muted">Created By</dt>
+                    <dd class="col-sm-8">@Model.CreatedBy</dd>
+
+                    <dt class="col-sm-4 text-muted">Created At</dt>
+                    <dd class="col-sm-8">
+                        <time datetime="@Model.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ssZ")">
+                            @Model.CreatedAt.ToString("MMM d, yyyy h:mm tt") UTC
+                        </time>
+                    </dd>
+
+                    @if (Model.DueDate.HasValue)
+                    {
+                        var isOverdue = Model.DueDate < DateTime.Now && Model.Status != TaskManager.Core.Entities.TaskStatus.Done;
+                        <dt class="col-sm-4 text-muted">Due Date</dt>
+                        <dd class="col-sm-8 @(isOverdue ? "text-danger fw-semibold" : "")">
+                            @if (isOverdue)
+                            {
+                                <span class="material-icons align-middle me-1 small" aria-hidden="true">warning</span>
+                                <span class="visually-hidden">Overdue: </span>
+                            }
+                            <time datetime="@Model.DueDate.Value.ToString("yyyy-MM-dd")">
+                                @Model.DueDate.Value.ToString("MMM d, yyyy")
+                            </time>
+                            @if (isOverdue) { <span class="badge bg-danger ms-2">Overdue</span> }
+                        </dd>
+                    }
+                </dl>
+            </div>
+
+            <div class="card-footer bg-transparent py-3">
+                <div class="d-flex gap-2 flex-wrap">
+                    <a asp-action="Edit" asp-route-id="@Model.Id"
+                       class="btn btn-warning text-dark">
+                        <span class="material-icons align-middle me-1" aria-hidden="true">edit</span>
+                        Edit Task
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id"
+                       class="btn btn-outline-danger">
+                        <span class="material-icons align-middle me-1" aria-hidden="true">delete</span>
+                        Delete Task
+                    </a>
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary ms-auto">
+                        <span class="material-icons align-middle me-1" aria-hidden="true">arrow_back</span>
+                        Back to List
+                    </a>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>

@@ -1,0 +1,633 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\info\\iowa-fullstack-accessibility-portfolio\\tests\\TaskManager.AccessibilityTests\\node_modules\\@playwright\\test\\cli.js",
+      "test"
+    ],
+    "configFile": "C:\\info\\iowa-fullstack-accessibility-portfolio\\tests\\TaskManager.AccessibilityTests\\playwright.config.ts",
+    "rootDir": "C:/info/iowa-fullstack-accessibility-portfolio/tests/TaskManager.AccessibilityTests/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/info/iowa-fullstack-accessibility-portfolio/tests/TaskManager.AccessibilityTests/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/info/iowa-fullstack-accessibility-portfolio/tests/TaskManager.AccessibilityTests/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\info\\iowa-fullstack-accessibility-portfolio\\tests\\TaskManager.AccessibilityTests\\test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "chromium",
+        "testDir": "C:\\info\\iowa-fullstack-accessibility-portfolio\\tests\\TaskManager.AccessibilityTests\\tests",
+        "snapshotDir": "C:\\info\\iowa-fullstack-accessibility-portfolio\\tests\\TaskManager.AccessibilityTests\\tests",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:5001",
+          "trace": "on-first-retry",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "../../accessibility-reports/axe-html-report",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../../accessibility-reports/axe-results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 4,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "accessibility.spec.ts",
+      "file": "accessibility.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "WCAG 2.1 AA — Task List Page (/",
+          "file": "accessibility.spec.ts",
+          "line": 35,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Tasks Index — zero axe violations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4302,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:11.479Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-846bf500d548204fd0bc",
+              "file": "accessibility.spec.ts",
+              "line": 36,
+              "column": 7
+            },
+            {
+              "title": "Tasks Index — passes on mobile viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1255,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:15.888Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-f1d95337dd57bbab3ee2",
+              "file": "accessibility.spec.ts",
+              "line": 59,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "WCAG 2.1 AA — Create Task Page",
+          "file": "accessibility.spec.ts",
+          "line": 73,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Create Task — zero axe violations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1147,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:17.149Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-2d60c55efeca9a1ad96b",
+              "file": "accessibility.spec.ts",
+              "line": 74,
+              "column": 7
+            },
+            {
+              "title": "Create Task with validation errors — zero axe violations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1299,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:18.301Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-3f44a9cdd01f4c4444be",
+              "file": "accessibility.spec.ts",
+              "line": 87,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "WCAG 2.1 AA — Edit Task Page",
+          "file": "accessibility.spec.ts",
+          "line": 102,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Edit Task — zero axe violations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1121,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:19.606Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-e514bbeb94d7ae0fd024",
+              "file": "accessibility.spec.ts",
+              "line": 103,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "WCAG 2.1 AA — Task Details Page",
+          "file": "accessibility.spec.ts",
+          "line": 117,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Task Details — zero axe violations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1087,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:20.734Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-a9494c213712e20d084c",
+              "file": "accessibility.spec.ts",
+              "line": 118,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "WCAG 2.1 AA — Delete Confirmation Page",
+          "file": "accessibility.spec.ts",
+          "line": 132,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Delete Confirmation — zero axe violations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1094,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:21.826Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-0e0a88643cd8ecae4901",
+              "file": "accessibility.spec.ts",
+              "line": 133,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Keyboard Navigation — WCAG 2.1 (Operable)",
+          "file": "accessibility.spec.ts",
+          "line": 147,
+          "column": 6,
+          "specs": [
+            {
+              "title": "All interactive elements reachable by Tab",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 275,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Focusable elements: A[]: Skip to main content\nA[]: task_alt\n                    TaskFlow\nA[]: list\n                                    My Tasks\nA[]: add_circle\n                                New Tas\nA[]: Create a new task\nINPUT[]: \nSELECT[]: Filter by priority\nSELECT[]: Filter by status\nBUTTON[]: Apply search filters\nTR[]: Conduct JAWS screen reader audit\n                 \nA[]: View details of Conduct JAWS screen reader audit\nA[]: Edit Conduct JAWS screen reader audit\nA[]: Delete Conduct JAWS screen reader audit\nTR[]: Setup ADO CI/CD pipeline\n                         \nA[]: View details of Setup ADO CI/CD pipeline\nA[]: Edit Setup ADO CI/CD pipeline\nA[]: Delete Setup ADO CI/CD pipeline\nTR[]: Write unit and integration tests\n                 \nA[]: View details of Write unit and integration tests\nA[]: Edit Write unit and integration tests\nA[]: Delete Write unit and integration tests\nTR[]: Implement WCAG 2.1 AA compliance\n                 \nA[]: View details of Implement WCAG 2.1 AA compliance\nA[]: Edit Implement WCAG 2.1 AA compliance\nA[]: Delete Implement WCAG 2.1 AA compliance\nTR[]: Set up project architecture\n                      \nA[]: View details of Set up project architecture\nA[]: Edit Set up project architecture\nA[]: Delete Set up project architecture\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:22.926Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-a5241f2ef57a125bd73c",
+              "file": "accessibility.spec.ts",
+              "line": 148,
+              "column": 7
+            },
+            {
+              "title": "Focus is visible on all interactive elements",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 195,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:23.206Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-e681a3fb7f085edd0240",
+              "file": "accessibility.spec.ts",
+              "line": 175,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "Screen Reader Support",
+          "file": "accessibility.spec.ts",
+          "line": 187,
+          "column": 6,
+          "specs": [
+            {
+              "title": "All images have alt text or aria-hidden",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 209,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:23.406Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-2d5da3877ac5c7a263f8",
+              "file": "accessibility.spec.ts",
+              "line": 188,
+              "column": 7
+            },
+            {
+              "title": "All form labels are associated with inputs",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 240,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:23.621Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-cddae71d294e1aba2e93",
+              "file": "accessibility.spec.ts",
+              "line": 205,
+              "column": 7
+            },
+            {
+              "title": "Page has logical heading hierarchy",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 208,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:23.866Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-09d503a4b4f98997e3e9",
+              "file": "accessibility.spec.ts",
+              "line": 222,
+              "column": 7
+            },
+            {
+              "title": "ARIA live regions are present",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 221,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-28T03:34:24.080Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ddd864604af8a6a0198f-01b888a024fadad70e1c",
+              "file": "accessibility.spec.ts",
+              "line": 229,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-28T03:34:11.129Z",
+    "duration": 13247.706,
+    "expected": 13,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
